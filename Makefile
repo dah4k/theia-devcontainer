@@ -20,7 +20,8 @@ all: $(TAG) ## Build container image
 
 .PHONY: test
 test: $(TAG) ## Test run container image
-	$(DOCKER) run --interactive --tty --rm --publish 3000:3000 --name=$(TAG) $(TAG)
+	$(DOCKER) run --interactive --tty --rm --detach --publish 3000:3000 --name=$(TAG) $(TAG)
+	@echo "Browse to http://localhost:3000"
 
 .PHONY: clean
 clean: ## Remove container image
