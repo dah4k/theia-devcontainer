@@ -29,5 +29,9 @@ jobs:
 
     - name: Build and Publish the Docker image
       run: |
-        docker build . --file Dockerfile --tag ghcr.io/dah4k/devcontainer:$(date +%Y%m%d)
-        docker push ghcr.io/dah4k/devcontainer:$(date +%Y%m%d)
+        docker build . --file Dockerfile.base --tag ghcr.io/dah4k/devcontainer-base:latest --tag ghcr.io/dah4k/devcontainer-base:$(date +%Y%m%d)
+        docker build . --file Dockerfile.runtime --tag ghcr.io/dah4k/devcontainer-runtime:latest --tag ghcr.io/dah4k/devcontainer-runtime:$(date +%Y%m%d)
+        docker push ghcr.io/dah4k/devcontainer-base:latest
+        docker push ghcr.io/dah4k/devcontainer-base:$(date +%Y%m%d)
+        docker push ghcr.io/dah4k/devcontainer-runtime:latest
+        docker push ghcr.io/dah4k/devcontainer-runtime:$(date +%Y%m%d)
