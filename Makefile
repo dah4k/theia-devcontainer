@@ -3,7 +3,8 @@
 
 DOCKER      ?= docker
 REGISTRY    ?= local
-TAGS        ?= $(REGISTRY)/devcontainer-base $(REGISTRY)/devcontainer-runtime
+IMAGES      ?= devcontainer-base devcontainer-runtime
+TAGS        ?= $(addprefix $(REGISTRY)/,$(IMAGES))
 _ANSI_NORM  := \033[0m
 _ANSI_CYAN  := \033[36m
 
@@ -15,13 +16,8 @@ help usage:
 .PHONY: all
 all: $(TAGS) ## Build all container images
 
-$(REGISTRY)/devcontainer-base: Dockerfile.base
+$(REGISTRY)/devcontainer-%: Dockerfile.%
 	$(DOCKER) build --tag $@ --file $< .
-
-$(REGISTRY)/devcontainer-runtime: $(REGISTRY)/devcontainer-base
-
-$(REGISTRY)/devcontainer-runtime: Dockerfile.runtime
-	$(DOCKER) build --tag $@ --file $< --build-arg BASE_IMAGE=$(REGISTRY)/devcontainer-base .
 
 .PHONY: test
 test: $(REGISTRY)/devcontainer-runtime ## Test runtime container image
