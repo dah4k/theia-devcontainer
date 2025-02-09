@@ -20,6 +20,8 @@ RUN zypper --quiet --non-interactive refresh \
         python311 \
         typescript \
         yarn \
+        java-17-openjdk \
+        maven \
         ## DEV and DEBUG tools \
         curl \
         fd \
@@ -31,10 +33,12 @@ RUN zypper --quiet --non-interactive refresh \
         w3m \
     && zypper --quiet --non-interactive clean
 
-#RUN groupadd --gid 1000 opensuse \
-#    && useradd --create-home --home-dir /src --uid 1000 --gid 1000 opensuse
+RUN groupadd --gid 1000 theia \
+    && useradd --create-home --home-dir /src --uid 1000 --gid 1000 theia \
+    && mkdir -p /src/project \
+    && chown -R theia:theia /src/project
 
-#USER opensuse
+USER theia
 
 WORKDIR /src
 
@@ -45,14 +49,10 @@ WORKDIR /src/theia-ide
 RUN yarn
 RUN yarn build
 RUN yarn download:plugins
+
 EXPOSE 3000
-ENTRYPOINT [ "yarn" ]
-CMD [ "browser", "start" ]
 
-#RUN npm install
-#RUN npm run build:dev
-#RUN npm run download:plugins
-#EXPOSE 3000
-#ENTRYPOINT [ "npm" ]
-#CMD [ "run", "start:browser" ]
-
+ENV THEIA_DEFAULT_PLUGINS=local-dir:/src/theia-ide/plugins
+WORKDIR /src/theia-ide/applications/browser
+ENTRYPOINT [ "node", "/src/theia-ide/applications/browser/lib/backend/main.js" ]
+CMD [ "/src/project", "--hostname=0.0.0.0" ]
