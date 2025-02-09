@@ -1,0 +1,16 @@
+# Copyright 2025 dah4k
+# SPDX-License-Identifier: EPL-2.0
+
+ARG BASE_IMAGE=dah4k/devcontainer-base
+FROM ${BASE_IMAGE}
+
+## TODO: Slim dowm container runtime
+
+USER theia
+
+EXPOSE 3000
+
+ENV THEIA_DEFAULT_PLUGINS=local-dir:/src/theia-ide/plugins
+WORKDIR /src/theia-ide/applications/browser
+ENTRYPOINT [ "node", "/src/theia-ide/applications/browser/lib/backend/main.js" ]
+CMD [ "/src/project", "--hostname=0.0.0.0" ]
