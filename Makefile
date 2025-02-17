@@ -3,7 +3,7 @@
 
 DOCKER      ?= docker
 REGISTRY    ?= local
-IMAGES      ?= devcontainer-base devcontainer-runtime
+IMAGES      ?= devcontainer
 TAGS        ?= $(addprefix $(REGISTRY)/,$(IMAGES))
 _ANSI_NORM  := \033[0m
 _ANSI_CYAN  := \033[36m
@@ -16,17 +16,17 @@ help usage:
 .PHONY: all
 all: $(TAGS) ## Build all container images
 
-$(REGISTRY)/devcontainer-%: Dockerfile.%
+$(REGISTRY)/%: Dockerfile.%
 	$(DOCKER) build --tag $@ --file $< .
 
 .PHONY: test
-test: $(REGISTRY)/devcontainer-runtime ## Test runtime container image
-	$(DOCKER) run --detach --rm --publish 3000:3000 --name=devcontainer-runtime $<
+test: $(REGISTRY)/devcontainer ## Test runtime container image
+	$(DOCKER) run --detach --rm --publish 3000:3000 --name=devcontainer $<
 	@echo "Browse to http://localhost:3000"
 
 .PHONY: clean
 clean: ## Remove all container images
-	$(DOCKER) stop devcontainer-runtime || true
+	$(DOCKER) stop devcontainer || true
 	$(DOCKER) image remove --force $(TAGS)
 
 .PHONY: distclean
