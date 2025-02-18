@@ -23,12 +23,28 @@ RUN zypper --quiet --non-interactive refresh \
         java-17-openjdk \
         maven \
         ## DEV and DEBUG tools \
+        bpf2go \
+        bpftool \
+        bpftool-bash-completion \
+        capstone \
+        cross-bpf-binutils \
+        cross-bpf-gcc14 \
         curl \
         fd \
         file \
+        gdb \
         git \
+        libbpf-devel \
+        libcapstone4 \
+        man \
+        man-pages \
+        man-pages-posix \
         plocate \
+        python3-capstone \
+        python311-pip \
+        python311-pipx \
         ripgrep \
+        rizin \
         vim \
         w3m \
     && zypper --quiet --non-interactive clean
@@ -40,6 +56,24 @@ RUN groupadd --gid 1000 theia \
 
 USER theia
 
+## Build Mandiant CAPA from source code
+## FIXME: pyinstaller ModuleNotFoundError: No module named 'capa'
+WORKDIR /src
+
+RUN git clone https://github.com/mandiant/capa
+
+WORKDIR /src/capa
+
+RUN git submodule update --init rules
+#RUN python3 -m venv /src/.capa-venv
+#ENV SAVED_PATH="$PATH"
+#ENV PATH="/src/.capa-venv/bin:$PATH"
+#RUN pip3 install -r requirements.txt
+#RUN pip3 install pyinstaller
+#RUN pyinstaller .github/pyinstaller/pyinstaller.spec
+#ENV PATH="${SAVED_PATH}"
+
+## Build Theia-IDE from source code
 WORKDIR /src
 
 RUN git clone https://github.com/eclipse-theia/theia-ide
