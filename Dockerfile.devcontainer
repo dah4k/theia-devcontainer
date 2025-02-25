@@ -27,6 +27,7 @@ RUN zypper --quiet --non-interactive refresh \
         java-17-openjdk \
         maven \
         ## DEV and DEBUG tools \
+        asciinema \
         bc \
         binutils \
         bison \
