@@ -3,6 +3,9 @@
 
 FROM opensuse/tumbleweed:latest
 
+## Restore man-pages and other documentation
+RUN sed -i 's/^rpm.install.excludedocs.*/rpm.install.excludedocs = no/' /etc/zypp/zypp.conf
+
 ## https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md
 RUN zypper --quiet --non-interactive refresh \
     && zypper --quiet --non-interactive install \
