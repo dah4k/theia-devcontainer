@@ -46,6 +46,7 @@ RUN zypper --quiet --non-interactive refresh \
         git \
         glibc-devel-static \
         graphviz \
+        jq \
         libbpf-devel \
         libcap-devel \
         libcapstone-devel \
@@ -59,7 +60,6 @@ RUN zypper --quiet --non-interactive refresh \
         ncurses-devel \
         patch \
         plocate \
-        python3-capstone \
         python311-pip \
         python311-pipx \
         ripgrep \
