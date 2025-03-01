@@ -1,17 +1,14 @@
 # Copyright 2025 dah4k
 # SPDX-License-Identifier: EPL-2.0
 
-FROM opensuse/tumbleweed:latest
-
-## Restore man-pages and other documentation
-RUN sed -i 's/^rpm.install.excludedocs.*/rpm.install.excludedocs = no/' /etc/zypp/zypp.conf
+FROM opensuse/tumbleweed:latest AS builder
 
 ## https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md
 RUN zypper --quiet --non-interactive refresh \
     && zypper --quiet --non-interactive install \
-        ## Theia build requirements \
         gcc \
         gcc-c++ \
+        git \
         libX11-devel \
         libsecret-devel \
         libxkbfile-devel \
@@ -26,92 +23,39 @@ RUN zypper --quiet --non-interactive refresh \
         yarn \
         java-17-openjdk \
         maven \
-        ## DEV and DEBUG tools \
-        asciinema \
-        bc \
-        binutils \
-        bison \
-        bpftool \
-        bpftool-bash-completion \
-        capstone \
-        clang \
-        cmake \
-        ctags \
-        curl \
-        dust \
-        fd \
-        file \
-        flex \
-        gdb \
-        git \
-        glibc-devel-static \
-        graphviz \
-        jq \
-        libbpf-devel \
-        libcap-devel \
-        libcapstone-devel \
-        libcapstone4 \
-        libelf-devel \
-        libopenssl-devel \
-        llvm \
-        man \
-        man-pages \
-        man-pages-posix \
-        ncurses-devel \
-        patch \
-        plocate \
-        python311-pip \
-        python311-pipx \
-        ripgrep \
-        rizin \
-        sqlite3 \
-        tmux \
-        tokei \
-        valgrind \
-        vim \
-        vim-data \
-        w3m \
     && zypper --quiet --non-interactive clean
 
 RUN groupadd --gid 1000 theia \
-    && useradd --create-home --home-dir /src --uid 1000 --gid 1000 theia \
-    && mkdir -p /src/project \
-    && chown -R theia:theia /src/project
+ && useradd --create-home --home-dir /home/theia --uid 1000 --gid 1000 theia \
+ && mkdir -p /home/theia/project \
+ && chown -R theia:theia /home/theia/project
 
 USER theia
 
-## Build Mandiant CAPA from source code
-WORKDIR /src
-
-RUN git clone https://github.com/mandiant/capa
-
-WORKDIR /src/capa
-
-RUN git submodule update --init rules
-RUN python3 -m venv /src/.capa-venv
-ENV SAVED_PATH="$PATH"
-ENV PATH="/src/.capa-venv/bin:$PATH"
-RUN pip3 install -r requirements.txt
-RUN pip3 install pyinstaller
-RUN pip3 install -e .[build]
-RUN pyinstaller .github/pyinstaller/pyinstaller.spec
-ENV PATH="${SAVED_PATH}"
-
-## Build Theia-IDE from source code
-WORKDIR /src
+WORKDIR /home/theia
 
 RUN git clone https://github.com/eclipse-theia/theia-ide
 
-WORKDIR /src/theia-ide
+WORKDIR /home/theia/theia-ide
 
 ENV NODE_OPTIONS="--max_old_space_size=4096"
-RUN yarn
-RUN yarn build
-RUN yarn download:plugins
+
+RUN yarn \
+ && yarn build \
+ && yarn download:plugins \
+ && yarn autoclean --init \
+ && echo *.ts >> .yarnclean \
+ && echo *.ts.map >> .yarnclean \
+ && echo *.spec.* >> .yarnclean \
+ && yarn autoclean --force \
+ && yarn cache clean \
+ && rm -rf .git applications/electron theia-extensions/launcher theia/extensions/updater node_modules
 
 EXPOSE 3000
 
 ENV THEIA_DEFAULT_PLUGINS=local-dir:/src/theia-ide/plugins
-WORKDIR /src/theia-ide/applications/browser
-ENTRYPOINT [ "node", "/src/theia-ide/applications/browser/lib/backend/main.js" ]
-CMD [ "/src/project", "--hostname=0.0.0.0" ]
+
+WORKDIR /home/theia/theia-ide/applications/browser
+
+ENTRYPOINT [ "node", "/home/theia/theia-ide/applications/browser/lib/backend/main.js" ]
+CMD [ "/home/theia/project", "--hostname=0.0.0.0" ]
