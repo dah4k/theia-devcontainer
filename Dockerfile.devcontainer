@@ -52,6 +52,7 @@ RUN sed -i 's/^rpm.install.excludedocs.*/rpm.install.excludedocs = no/' /etc/zyp
 
 RUN zypper --quiet --non-interactive refresh \
  && zypper --quiet --non-interactive install \
+        ## Theia IDE \
         java-17-openjdk \
         libX11-6 \
         libsecret-1-0 \
@@ -59,6 +60,50 @@ RUN zypper --quiet --non-interactive refresh \
         maven \
         nodejs-default \
         nodejs22 \
+        ## DEV tools \
+        asciinema \
+        bc \
+        bison \
+        bpftool \
+        capstone \
+        clang \
+        cmake \
+        ctags \
+        curl \
+        dust \
+        fd \
+        file \
+        flex \
+        gcc \
+        gcc-c++ \
+        git \
+        glibc-devel-static \
+        jq \
+        libbpf-devel \
+        libcap-devel \
+        libcapstone-devel \
+        libelf-devel \
+        libopenssl-devel \
+        llvm \
+        make \
+        man \
+        man-pages \
+        man-pages-posix \
+        ncurses-devel \
+        patch \
+        plocate \
+        python311 \
+        python311-pip \
+        ripgrep \
+        rizin \
+        rustup \
+        sqlite3 \
+        tmux \
+        tokei \
+        valgrind \
+        vim \
+        vim-data \
+        w3m \
  && zypper --quiet --non-interactive clean
 
 RUN groupadd --gid 1000 theia \
