@@ -5,14 +5,16 @@ FROM opensuse/tumbleweed:latest AS builder
 
 ## https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md
 RUN zypper --quiet --non-interactive refresh \
-    && zypper --quiet --non-interactive install \
+ && zypper --quiet --non-interactive install \
         gcc \
         gcc-c++ \
         git \
+        java-17-openjdk \
         libX11-devel \
         libsecret-devel \
         libxkbfile-devel \
         make \
+        maven \
         nodejs-default \
         nodejs22 \
         npm-default \
@@ -21,22 +23,13 @@ RUN zypper --quiet --non-interactive refresh \
         python311 \
         typescript \
         yarn \
-        java-17-openjdk \
-        maven \
-    && zypper --quiet --non-interactive clean
+ && zypper --quiet --non-interactive clean
 
-RUN groupadd --gid 1000 theia \
- && useradd --create-home --home-dir /home/theia --uid 1000 --gid 1000 theia \
- && mkdir -p /home/theia/project \
- && chown -R theia:theia /home/theia/project
-
-USER theia
-
-WORKDIR /home/theia
+WORKDIR /src
 
 RUN git clone https://github.com/eclipse-theia/theia-ide
 
-WORKDIR /home/theia/theia-ide
+WORKDIR /src/theia-ide
 
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 
@@ -51,11 +44,39 @@ RUN yarn \
  && yarn cache clean \
  && rm -rf .git applications/electron theia-extensions/launcher theia/extensions/updater node_modules
 
+################################################################################
+FROM opensuse/tumbleweed:latest AS runtime
+
+## Restore man-pages and other documentation
+RUN sed -i 's/^rpm.install.excludedocs.*/rpm.install.excludedocs = no/' /etc/zypp/zypp.conf
+
+RUN zypper --quiet --non-interactive refresh \
+ && zypper --quiet --non-interactive install \
+        java-17-openjdk \
+        libX11-6 \
+        libsecret-1-0 \
+        libxkbfile1 \
+        maven \
+        nodejs-default \
+        nodejs22 \
+ && zypper --quiet --non-interactive clean
+
+RUN groupadd --gid 1000 theia \
+ && useradd --create-home --home-dir /home/theia --uid 1000 --gid 1000 theia \
+ && mkdir -p /home/theia/project \
+ && chown -R theia:theia /home/theia/project
+
+WORKDIR /home/theia
+
+COPY --from=builder /src/theia-ide /opt/theia
+
 EXPOSE 3000
 
-ENV THEIA_DEFAULT_PLUGINS=local-dir:/src/theia-ide/plugins
+ENV HOME=/home/theia \
+    THEIA_DEFAULT_PLUGINS=local-dir:/opt/theia/plugins
 
-WORKDIR /home/theia/theia-ide/applications/browser
+USER theia
+#WORKDIR /opt/theia/applications/browser
 
-ENTRYPOINT [ "node", "/home/theia/theia-ide/applications/browser/lib/backend/main.js" ]
+ENTRYPOINT [ "node", "/opt/theia/applications/browser/lib/backend/main.js" ]
 CMD [ "/home/theia/project", "--hostname=0.0.0.0" ]
