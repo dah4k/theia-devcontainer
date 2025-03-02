@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build and Publish Docker Image
 
 on:
   push:
@@ -29,6 +29,6 @@ jobs:
 
     - name: Build and Publish the Docker image
       run: |
-        docker build . --file Dockerfile.devcontainer --tag ghcr.io/dah4k/devcontainer:latest --tag ghcr.io/dah4k/devcontainer:$(date +%Y%m%d)
-        docker push ghcr.io/dah4k/devcontainer:$(date +%Y%m%d)
-        docker push ghcr.io/dah4k/devcontainer:latest
+        docker build . --file Dockerfile.theia-devcontainer --tag ghcr.io/dah4k/theia-devcontainer:latest --tag ghcr.io/dah4k/theia-devcontainer:$(date +%Y%m%d)
+        docker push ghcr.io/dah4k/theia-devcontainer:$(date +%Y%m%d)
+        docker push ghcr.io/dah4k/theia-devcontainer:latest

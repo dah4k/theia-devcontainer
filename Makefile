@@ -3,7 +3,7 @@
 
 DOCKER      ?= docker
 REGISTRY    ?= local
-IMAGES      ?= devcontainer
+IMAGES      ?= theia-devcontainer
 TAGS        ?= $(addprefix $(REGISTRY)/,$(IMAGES))
 _ANSI_NORM  := \033[0m
 _ANSI_CYAN  := \033[36m
@@ -20,13 +20,13 @@ $(REGISTRY)/%: Dockerfile.%
 	$(DOCKER) build --tag $@ --file $< .
 
 .PHONY: test
-test: $(REGISTRY)/devcontainer ## Test runtime container image
-	$(DOCKER) run --detach --rm --publish 3000:3000 --name=devcontainer $<
+test: $(REGISTRY)/theia-devcontainer ## Test runtime container image
+	$(DOCKER) run --detach --rm --publish 3000:3000 --name=theia-devcontainer $<
 	@echo "Browse to http://localhost:3000"
 
 .PHONY: clean
 clean: ## Remove all container images
-	$(DOCKER) stop devcontainer || true
+	$(DOCKER) stop theia-devcontainer || true
 	$(DOCKER) image remove --force $(TAGS)
 
 .PHONY: distclean
