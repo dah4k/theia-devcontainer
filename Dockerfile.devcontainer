@@ -9,7 +9,7 @@ FROM opensuse/tumbleweed:latest AS builder
 ## Install Theia IDE build requirements
 ## https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md
 RUN zypper --quiet --non-interactive refresh \
- && zypper --quiet --non-interactive install \
+ && zypper --quiet --non-interactive install --no-recommends \
         gcc \
         gcc-c++ \
         git \
@@ -58,7 +58,7 @@ FROM opensuse/tumbleweed:latest AS runtime
 RUN sed -i 's/^rpm.install.excludedocs.*/rpm.install.excludedocs = no/' /etc/zypp/zypp.conf
 
 RUN zypper --quiet --non-interactive refresh \
- && zypper --quiet --non-interactive install \
+ && zypper --quiet --non-interactive install --no-recommends \
         ## Theia IDE runtime requirements \
         java-17-openjdk \
         libX11-6 \
