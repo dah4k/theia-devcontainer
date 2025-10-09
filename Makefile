@@ -24,6 +24,10 @@ test: $(REGISTRY)/theia-devcontainer ## Test runtime container image
 	$(DOCKER) run --detach --rm --publish 3000:3000 --name=theia-devcontainer $<
 	@echo "Browse to http://localhost:3000"
 
+.PHONY: debug
+debug: $(REGISTRY)/theia-devcontainer ## Debug runtime container image
+	$(DOCKER) run --interactive --tty --user root --rm --entrypoint=/bin/bash $<
+
 .PHONY: clean
 clean: ## Remove all container images
 	$(DOCKER) stop theia-devcontainer || true
