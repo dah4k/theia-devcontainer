@@ -29,6 +29,19 @@ RUN zypper --quiet --non-interactive refresh \
         yarn \
  && zypper --quiet --non-interactive clean
 
+## WARNING: Must disable .NET installer and CLI command telemetry
+## https://learn.microsoft.com/en-us/dotnet/core/tools/telemetry#how-to-opt-out
+## https://github.com/dotnet/interactive#how-to-opt-out
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    DOTNET_INTERACTIVE_CLI_TELEMETRY_OPTOUT=1
+
+## Install latest .NET SDK 9.0 from Microsoft repo
+## https://learn.microsoft.com/en-us/dotnet/core/install/linux-sles
+RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc \
+ && zypper addrepo --check --refresh --gpgcheck-strict "https://packages.microsoft.com/sles/15/prod/" packages-microsoft-com-prod \
+ && zypper --quiet --non-interactive install --no-recommends dotnet-sdk-9.0 \
+ && zypper --quiet --non-interactive clean
+
 ## Create theia user
 RUN groupadd --gid 1000 theia \
  && useradd --create-home --home-dir /home/theia --uid 1000 --gid 1000 theia \
