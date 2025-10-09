@@ -48,6 +48,8 @@ RUN groupadd --gid 1000 theia \
  && mkdir -p /home/theia/project \
  && chown -R theia:theia /home/theia/project
 
+USER theia
+
 WORKDIR /home/theia
 
 RUN git clone https://github.com/eclipse-theia/theia-ide
@@ -69,8 +71,6 @@ RUN yarn \
  && rm -rf .git applications/electron theia-extensions/launcher theia/extensions/updater node_modules
 
 EXPOSE 3000
-
-USER theia
 
 WORKDIR /home/theia
 
