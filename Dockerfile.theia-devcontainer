@@ -10,22 +10,48 @@ RUN sed -i 's/^rpm.install.excludedocs.*/rpm.install.excludedocs = no/' /etc/zyp
 ## https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md
 RUN zypper --quiet --non-interactive refresh \
  && zypper --quiet --non-interactive install --no-recommends \
+        capstone \
+        cmake \
+        ctags \
+        curl \
+        dust \
+        elixir \
+        elixir-hex \
+        erlang \
+        erlang-rebar3 \
+        fd \
+        file \
         gcc \
         gcc-c++ \
+        gdb \
         git \
+        go1.25 \
         java-25-openjdk \
+        jq \
         libX11-devel \
         libsecret-devel \
         libxkbfile-devel \
         make \
+        man \
+        man-pages \
+        man-pages-posix \
         maven \
         nodejs-default \
         nodejs22 \
         npm-default \
         npm22 \
+        patch \
         pkgconf-pkg-config \
+        plocate \
         python314 \
+        ripgrep \
+        rizin \
+        rustup \
+        tokei \
         typescript \
+        valgrind \
+        vim \
+        vim-data \
         yarn \
  && zypper --quiet --non-interactive clean
 
