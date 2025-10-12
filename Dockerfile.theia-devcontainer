@@ -50,7 +50,7 @@ RUN zypper --quiet --non-interactive refresh \
         plocate \
         ripgrep \
         rizin \
-        rustup \
+        rust1.90 \
         tokei \
         valgrind \
         vim \
