@@ -1,3 +1,6 @@
+# Copyright 2025 dah4k
+# SPDX-License-Identifier: EPL-2.0
+---
 name: Build and Publish Docker Image
 
 on:
@@ -27,8 +30,15 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and Publish the Docker image
-      run: |
-        docker build . --file Dockerfile.theia-devcontainer --tag ghcr.io/dah4k/theia-devcontainer:latest --tag ghcr.io/dah4k/theia-devcontainer:$(date +%Y%m%d)
-        docker push ghcr.io/dah4k/theia-devcontainer:$(date +%Y%m%d)
-        docker push ghcr.io/dah4k/theia-devcontainer:latest
+    - name: Get Git commit timestamps
+      run: echo "TIMESTAMP=$(git log -1 --pretty=%ct)" >> $GITHUB_ENV
+
+    - name: Build and Push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        dockerfile: Dockerfile.theia-devcontainer
+        tags: dah4k/theia-devcontainer
+      env:
+        SOURCE_DATE_EPOCH: ${{ env.TIMESTAMP }}
+
