@@ -38,6 +38,7 @@ jobs:
       with:
         context: .
         file: Dockerfile.theia-devcontainer
+        push: true
         tags: dah4k/theia-devcontainer
       env:
         SOURCE_DATE_EPOCH: ${{ env.TIMESTAMP }}
