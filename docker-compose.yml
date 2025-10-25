@@ -1,0 +1,16 @@
+# Copyright 2025 dah4k
+# SPDX-License-Identifier: EPL-2.0
+---
+services:
+  theia-devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile.theia-devcontainer
+    user: 1000:1000
+    command: ["node", /home/theia/theia-ide/applications/browser/lib/backend/main.js", "/home/theia/project", "--hostname=0.0.0.0"]
+    environment:
+      - HOME=/home/theia
+      - THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/theia-ide/plugins
+    ports:
+      - "3000:3000"
+
