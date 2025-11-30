@@ -25,8 +25,8 @@ test: $(REGISTRY)/theia-devcontainer ## Test runtime container image
 	@echo "Browse to http://localhost:3000"
 
 .PHONY: debug
-debug: $(REGISTRY)/theia-devcontainer ## Debug runtime container image
-	$(DOCKER) run --interactive --tty --user root --rm --entrypoint=/bin/bash $<
+debug: ## Debug last run container image
+	$(DOCKER) exec --interactive --tty --user root `docker ps --latest --quiet` /bin/bash
 
 .PHONY: clean
 clean: ## Remove all container images
