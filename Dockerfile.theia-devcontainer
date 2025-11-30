@@ -98,6 +98,11 @@ RUN yarn \
  && yarn cache clean \
  && rm -rf .git applications/electron theia-extensions/launcher theia/extensions/updater node_modules
 
+## TODO: Build LLaMaFile
+#WORKDIR /home/theia
+#RUN git clone --recurse-submodules https://github.com/mozilla-ai/llamafile
+#WORKDIR /home/theia/llamafile
+
 EXPOSE 3000
 
 WORKDIR /home/theia
