@@ -28,6 +28,8 @@ RUN zypper --quiet --non-interactive refresh \
         python314 \
         typescript \
         yarn \
+        ## Runtime requirements \
+        supervisor \
         ## Other devel tools \
         capstone \
         cmake \
@@ -103,12 +105,12 @@ RUN yarn \
 #RUN git clone --recurse-submodules https://github.com/mozilla-ai/llamafile
 #WORKDIR /home/theia/llamafile
 
+## Start Theia IDE as Supervisord subprocess
+USER root
+
 EXPOSE 3000
 
 WORKDIR /home/theia
 
-ENV HOME=/home/theia \
-    THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/theia-ide/plugins
-
-ENTRYPOINT [ "node", "/home/theia/theia-ide/applications/browser/lib/backend/main.js" ]
-CMD [ "/home/theia/project", "--hostname=0.0.0.0" ]
+COPY config/supervisord.conf /etc/supervisord.conf
+ENTRYPOINT [ "/usr/bin/supervisord", "-c", "/etc/supervisord.conf" ]
