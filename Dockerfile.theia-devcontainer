@@ -44,6 +44,7 @@ RUN zypper --quiet --non-interactive refresh \
         file \
         gdb \
         go1.25 \
+        iproute2 \
         jq \
         man \
         man-pages \
@@ -100,15 +101,26 @@ RUN yarn \
  && yarn cache clean \
  && rm -rf .git applications/electron theia-extensions/launcher theia/extensions/updater node_modules
 
-## TODO: Build LLaMaFile
+## TODO: Build LlamaFile
 #WORKDIR /home/theia
 #RUN git clone --recurse-submodules https://github.com/mozilla-ai/llamafile
 #WORKDIR /home/theia/llamafile
 
-## Start Theia IDE as Supervisord subprocess
+## Use prebuilt LlamaFile for now
+ARG LLAMAFILE_FILENAME="google_gemma-3-1b-it-Q6_K.llamafile"
+ARG LLAMAFILE_URL="https://huggingface.co/Mozilla/gemma-3-1b-it-llamafile/resolve/main/$LLAMAFILE_FILENAME"
+ARG LLAMAFILE_SHA256="7c25128c7eae21aa1fa57ae4ce85528392bf7704870ebc9cef578cd68d9da154"
+
+WORKDIR /home/theia/llamafiles
+
+RUN curl -OL $LLAMAFILE_URL \
+ && (echo "$LLAMAFILE_SHA256  $LLAMAFILE_FILENAME" | sha256sum -c - ) \
+ && chmod +x $LLAMAFILE_FILENAME
+
+## Supervisord must run as Root
 USER root
 
-EXPOSE 3000
+EXPOSE 3000 3001
 
 WORKDIR /home/theia
 
