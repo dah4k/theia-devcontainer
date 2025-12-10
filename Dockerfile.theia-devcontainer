@@ -66,11 +66,11 @@ RUN zypper --quiet --non-interactive refresh \
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_INTERACTIVE_CLI_TELEMETRY_OPTOUT=1
 
-## Install latest .NET SDK 9.0 from Microsoft repo
+## Install latest .NET SDK 10.0 from Microsoft repo
 ## https://learn.microsoft.com/en-us/dotnet/core/install/linux-sles
 RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc \
  && zypper addrepo --check --refresh --gpgcheck-strict "https://packages.microsoft.com/sles/15/prod/" packages-microsoft-com-prod \
- && zypper --quiet --non-interactive install --no-recommends dotnet-sdk-9.0 \
+ && zypper --quiet --non-interactive install --no-recommends dotnet-sdk-10.0 \
  && zypper --quiet --non-interactive clean
 
 ## Create theia user
