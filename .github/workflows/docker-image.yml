@@ -30,16 +30,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Get Git commit timestamps
-      run: echo "TIMESTAMP=$(git log -1 --pretty=%ct)" >> $GITHUB_ENV
-
-    - name: Build and Push
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        file: Dockerfile.theia-devcontainer
-        push: true
-        tags: dah4k/theia-devcontainer
-      env:
-        SOURCE_DATE_EPOCH: ${{ env.TIMESTAMP }}
-
+    - name: Build and Publish the Docker image
+      run: |
+        docker build . --file Dockerfile.theia-devcontainer --tag ghcr.io/dah4k/theia-devcontainer:latest --tag ghcr.io/dah4k/theia-devcontainer:$(date +%Y%m%d)
+        docker push ghcr.io/dah4k/theia-devcontainer:$(date +%Y%m%d)
+        docker push ghcr.io/dah4k/theia-devcontainer:latest
