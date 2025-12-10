@@ -117,9 +117,6 @@ RUN curl -OL $LLAMAFILE_URL \
  && (echo "$LLAMAFILE_SHA256  $LLAMAFILE_FILENAME" | sha256sum -c - ) \
  && chmod +x $LLAMAFILE_FILENAME
 
-## Supervisord must run as Root
-USER root
-
 EXPOSE 3000 3001
 
 WORKDIR /home/theia
