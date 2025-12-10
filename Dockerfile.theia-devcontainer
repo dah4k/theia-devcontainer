@@ -27,6 +27,7 @@ RUN zypper --quiet --non-interactive refresh \
         pkgconf-pkg-config \
         python314 \
         typescript \
+        unzip \
         yarn \
         ## Runtime requirements \
         supervisor \
@@ -117,9 +118,18 @@ RUN curl -OL $LLAMAFILE_URL \
  && (echo "$LLAMAFILE_SHA256  $LLAMAFILE_FILENAME" | sha256sum -c - ) \
  && chmod +x $LLAMAFILE_FILENAME
 
-EXPOSE 3000 3001
+WORKDIR /home/theia
+
+RUN git clone https://github.com/jart/cosmopolitan/
+
+WORKDIR /home/theia/cosmopolitan
+
+## FIXME: error:test/libc/calls/cachestat_test.c:86: cachestat_testCachestatAfterWrite() on buildkitsandbox
+RUN make
 
 WORKDIR /home/theia
+
+EXPOSE 3000 3001
 
 COPY config/supervisord.conf /etc/supervisord.conf
 ENTRYPOINT [ "/usr/bin/supervisord", "-c", "/etc/supervisord.conf" ]
