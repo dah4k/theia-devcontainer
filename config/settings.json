@@ -1,0 +1,42 @@
+{
+    "ai-features.AiEnable.enableAI": true,
+    "ai-features.llamafile.llamafiles": [
+        {
+            "name": "llamafiles/Gemma-3",
+            "uri": "file:///home/theia/llamafiles/google_gemma-3-1b-it-Q6_K.llamafile",
+            "port": 30000
+        }
+    ],
+    "ai-features.languageModelAliases": {
+        "default/code": {
+            "selectedModel": "llamafiles/Gemma-3"
+        },
+        "default/universal": {
+            "selectedModel": "llamafiles/Gemma-3"
+        },
+        "default/code-completion": {
+            "selectedModel": "llamafiles/Gemma-3"
+        },
+        "default/summarize": {
+            "selectedModel": "llamafiles/Gemma-3"
+        }
+    },
+    "ai-features.agentSettings": {
+        "ClaudeCode": {
+            "enable": false
+        },
+        "Codex": {
+            "enable": false
+        },
+        "ProjectInfo": {
+            "enable": false
+        },
+        "GitHub": {
+            "enable": false
+        }
+    },
+    "ai-features.google.models": [],
+    "ai-features.anthropic.AnthropicModels": [],
+    "ai-features.openAiOfficial.officialOpenAiModels": []
+}
+

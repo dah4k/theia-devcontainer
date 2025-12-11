@@ -125,9 +125,20 @@ RUN git clone https://github.com/jart/cosmopolitan/
 WORKDIR /home/theia/cosmopolitan
 
 ## FIXME: error:test/libc/calls/cachestat_test.c:86: cachestat_testCachestatAfterWrite() on buildkitsandbox
-RUN make
+#RUN make
 
-WORKDIR /home/theia
+## Disable Theia check for updates
+## https://github.com/eclipse-theia/theia-ide/issues/546
+RUN sed -i 's/default: true/default: false/' \
+    /home/theia/theia-ide/theia-extensions/updater/lib/electron-browser/updater/theia-updater-preferences.js \
+    /home/theia/theia-ide/theia-extensions/updater/src/electron-browser/updater/theia-updater-preferences.ts
+
+## Enable Theia experimental AI Features
+## https://theia-ide.org/docs/user_ai/#llamafile-models
+WORKDIR /home/theia/.theia-ide
+COPY --chown=theia:theia --chmod=644 config/settings.json .
+
+WORKDIR /home/theia/
 
 EXPOSE 3000 3001
 
