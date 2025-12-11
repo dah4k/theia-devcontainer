@@ -23,7 +23,6 @@ $(REGISTRY)/%: Dockerfile.%
 test: $(REGISTRY)/theia-devcontainer ## Test runtime container image
 	$(DOCKER) run --detach --rm --publish 3000:3000 --publish 3001:3001 --name=theia-devcontainer $<
 	@echo "Browse to http://localhost:3000 for Theia IDE"
-	@echo "Browse to http://localhost:3001 for LlamaFile Web"
 
 .PHONY: debug
 debug: ## Debug last run container image
